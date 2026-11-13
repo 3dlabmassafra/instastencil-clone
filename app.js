@@ -1,69 +1,91 @@
 /* ============================================================
-   InstaStencil – app.js
-   Full image-to-stencil conversion engine (100% client-side)
+   InstaStencil – app.js  v2.0
+   Advanced stencil engine:
+     • Bilateral filter
+     • Full Canny edge detection (Gaussian → Sobel → NMS → Hysteresis)
+     • Line thickening (dilation)
+     • Contour smoothing
+     • Gemini API integration for AI-grade line art
    ============================================================ */
-
 'use strict';
 
-// ─── State ────────────────────────────────────────────────
+// ─── State ─────────────────────────────────────────────────
 const state = {
-  imageData: null,       // original ImageData
-  img: null,             // HTMLImageElement
-  mode: 'threshold',
+  imageData: null,
+  img: null,
+  mode: 'canny',          // canny | threshold | sketch | ai
   threshold: 128,
-  contrast: 0,
-  blur: 0,
-  edgeStrength: 50,
+  cannyLow: 20,
+  cannyHigh: 60,
+  blur: 1.5,
+  lineThickness: 1,
+  bilateral: true,
   invert: false,
-  outputColor: 'black',
-  customColor: '#6C63FF',
+  outputColor: 'red',
+  customColor: '#e74c3c',
   layers: 1,
   stencilReady: false,
+  apiKey: localStorage.getItem('gemini_api_key') || '',
 };
 
-// ─── DOM References ───────────────────────────────────────
-const uploadZone      = document.getElementById('uploadZone');
-const uploadInner     = document.getElementById('uploadInner');
-const fileInput       = document.getElementById('fileInput');
-const toolPanels      = document.getElementById('toolPanels');
-const originalCanvas  = document.getElementById('originalCanvas');
-const stencilCanvas   = document.getElementById('stencilCanvas');
+// ─── DOM ───────────────────────────────────────────────────
+const uploadZone        = document.getElementById('uploadZone');
+const fileInput         = document.getElementById('fileInput');
+const toolPanels        = document.getElementById('toolPanels');
+const originalCanvas    = document.getElementById('originalCanvas');
+const stencilCanvas     = document.getElementById('stencilCanvas');
 const processingOverlay = document.getElementById('processingOverlay');
-const stencilPlaceholder = document.getElementById('stencilPlaceholder');
-const originalView    = document.getElementById('originalView');
-const stencilView     = document.getElementById('stencilView');
-const compareView     = document.getElementById('compareView');
-const canvasInfo      = document.getElementById('canvasInfo');
-const processBtn      = document.getElementById('processBtn');
-const downloadBtn     = document.getElementById('downloadBtn');
-const newImageBtn     = document.getElementById('newImageBtn');
-const resetBtn        = document.getElementById('resetBtn');
+const stencilPlaceholder= document.getElementById('stencilPlaceholder');
+const originalView      = document.getElementById('originalView');
+const stencilView       = document.getElementById('stencilView');
+const compareView       = document.getElementById('compareView');
+const canvasInfo        = document.getElementById('canvasInfo');
+const processBtn        = document.getElementById('processBtn');
+const downloadBtn       = document.getElementById('downloadBtn');
+const newImageBtn       = document.getElementById('newImageBtn');
+const resetBtn          = document.getElementById('resetBtn');
+const processingStatus  = document.getElementById('processingStatus');
 
-const thresholdSlider = document.getElementById('threshold');
-const thresholdVal    = document.getElementById('thresholdVal');
-const contrastSlider  = document.getElementById('contrast');
-const contrastVal     = document.getElementById('contrastVal');
+// sliders
+const cannyLowSlider  = document.getElementById('cannyLow');
+const cannyLowVal     = document.getElementById('cannyLowVal');
+const cannyHighSlider = document.getElementById('cannyHigh');
+const cannyHighVal    = document.getElementById('cannyHighVal');
 const blurSlider      = document.getElementById('blur');
 const blurVal         = document.getElementById('blurVal');
-const edgeSlider      = document.getElementById('edgeStrength');
-const edgeVal         = document.getElementById('edgeVal');
-const invertToggle    = document.getElementById('invertToggle');
+const threshSlider    = document.getElementById('threshold');
+const threshVal       = document.getElementById('thresholdVal');
+const thickSlider     = document.getElementById('lineThickness');
+const thickVal        = document.getElementById('thickVal');
 const layersSlider    = document.getElementById('layers');
 const layersVal       = document.getElementById('layersVal');
-const customColorInput = document.getElementById('customColor');
-const thresholdGroup  = document.getElementById('thresholdGroup');
-const edgeGroup       = document.getElementById('edgeGroup');
+const invertToggle    = document.getElementById('invertToggle');
+const bilateralToggle = document.getElementById('bilateralToggle');
+const customColorInput= document.getElementById('customColor');
+const apiKeyInput     = document.getElementById('apiKeyInput');
 
-// ─── Upload / Drag & Drop ─────────────────────────────────
+// panel groups
+const cannyGroup     = document.getElementById('cannyGroup');
+const thresholdGroup = document.getElementById('thresholdGroup');
+const aiGroup        = document.getElementById('aiGroup');
+
+// ─── Upload / Drag & Drop ──────────────────────────────────
 uploadZone.addEventListener('click', () => fileInput.click());
 uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
 uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag-over'));
 uploadZone.addEventListener('drop', e => {
   e.preventDefault(); uploadZone.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('image/')) loadImage(file);
+  const f = e.dataTransfer.files[0];
+  if (f && f.type.startsWith('image/')) loadImage(f);
 });
 fileInput.addEventListener('change', e => { if (e.target.files[0]) loadImage(e.target.files[0]); });
+
+document.addEventListener('paste', e => {
+  for (const item of (e.clipboardData || window.clipboardData).items) {
+    if (item.type.startsWith('image/')) { loadImage(item.getAsFile()); break; }
+  }
+});
+
 newImageBtn.addEventListener('click', () => {
   toolPanels.style.display = 'none';
   uploadZone.style.display = 'flex';
@@ -91,16 +113,16 @@ function loadImage(file) {
 }
 
 function drawOriginal(img) {
-  const maxW = Math.min(img.naturalWidth, 800);
+  const maxW = Math.min(img.naturalWidth, 900);
   const scale = maxW / img.naturalWidth;
-  originalCanvas.width  = img.naturalWidth  * scale;
-  originalCanvas.height = img.naturalHeight * scale;
+  originalCanvas.width  = Math.round(img.naturalWidth  * scale);
+  originalCanvas.height = Math.round(img.naturalHeight * scale);
   const ctx = originalCanvas.getContext('2d');
   ctx.drawImage(img, 0, 0, originalCanvas.width, originalCanvas.height);
   state.imageData = ctx.getImageData(0, 0, originalCanvas.width, originalCanvas.height);
 }
 
-// ─── Tab switching ────────────────────────────────────────
+// ─── Tabs ──────────────────────────────────────────────────
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -116,31 +138,38 @@ function showTab(tab) {
   if (tab === 'compare' && state.stencilReady) drawCompare();
 }
 
-// ─── Controls ─────────────────────────────────────────────
+// ─── Mode switching ────────────────────────────────────────
 document.querySelectorAll('.seg-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     state.mode = btn.dataset.mode;
-    thresholdGroup.style.display = state.mode === 'threshold' ? '' : 'none';
-    edgeGroup.style.display      = (state.mode === 'edge' || state.mode === 'sketch') ? '' : 'none';
+    cannyGroup.style.display     = (state.mode === 'canny' || state.mode === 'sketch') ? '' : 'none';
+    thresholdGroup.style.display = (state.mode === 'threshold' || state.mode === 'sketch') ? '' : 'none';
+    aiGroup.style.display        = state.mode === 'ai' ? '' : 'none';
   });
 });
 
-function bindSlider(slider, valEl, stateKey) {
-  slider.addEventListener('input', () => {
-    state[stateKey] = parseFloat(slider.value);
-    valEl.textContent = slider.value;
-  });
+// ─── Sliders ───────────────────────────────────────────────
+function bindSlider(el, valEl, key) {
+  el.addEventListener('input', () => { state[key] = parseFloat(el.value); valEl.textContent = el.value; });
 }
-bindSlider(thresholdSlider, thresholdVal, 'threshold');
-bindSlider(contrastSlider,  contrastVal,  'contrast');
+bindSlider(cannyLowSlider,  cannyLowVal,  'cannyLow');
+bindSlider(cannyHighSlider, cannyHighVal, 'cannyHigh');
 bindSlider(blurSlider,      blurVal,      'blur');
-bindSlider(edgeSlider,      edgeVal,      'edgeStrength');
+bindSlider(threshSlider,    threshVal,    'threshold');
+bindSlider(thickSlider,     thickVal,     'lineThickness');
 bindSlider(layersSlider,    layersVal,    'layers');
 
-invertToggle.addEventListener('change', () => { state.invert = invertToggle.checked; });
-customColorInput.addEventListener('input', () => { state.customColor = customColorInput.value; });
+invertToggle.addEventListener('change',   () => { state.invert    = invertToggle.checked; });
+bilateralToggle.addEventListener('change',() => { state.bilateral = bilateralToggle.checked; });
+customColorInput.addEventListener('input',() => { state.customColor = customColorInput.value; });
+apiKeyInput.addEventListener('change', () => {
+  state.apiKey = apiKeyInput.value.trim();
+  localStorage.setItem('gemini_api_key', state.apiKey);
+});
+if (state.apiKey) apiKeyInput.value = state.apiKey;
+
 document.querySelectorAll('input[name="outputColor"]').forEach(r => {
   r.addEventListener('change', () => {
     state.outputColor = r.value;
@@ -149,168 +178,248 @@ document.querySelectorAll('input[name="outputColor"]').forEach(r => {
 });
 
 resetBtn.addEventListener('click', () => {
-  thresholdSlider.value = 128; thresholdVal.textContent = '128';
-  contrastSlider.value  = 0;   contrastVal.textContent  = '0';
-  blurSlider.value      = 0;   blurVal.textContent      = '0';
-  edgeSlider.value      = 50;  edgeVal.textContent      = '50';
-  invertToggle.checked  = false;
+  cannyLowSlider.value  = 20;  cannyLowVal.textContent  = '20';
+  cannyHighSlider.value = 60;  cannyHighVal.textContent = '60';
+  blurSlider.value      = 1.5; blurVal.textContent      = '1.5';
+  threshSlider.value    = 128; threshVal.textContent    = '128';
+  thickSlider.value     = 1;   thickVal.textContent     = '1';
   layersSlider.value    = 1;   layersVal.textContent    = '1';
-  document.querySelector('[data-mode="threshold"]').click();
-  Object.assign(state, { threshold:128, contrast:0, blur:0, edgeStrength:50, invert:false, layers:1, mode:'threshold', outputColor:'black' });
-  document.querySelector('input[name="outputColor"][value="black"]').checked = true;
+  invertToggle.checked  = false;
+  bilateralToggle.checked = true;
+  Object.assign(state, { cannyLow:20, cannyHigh:60, blur:1.5, threshold:128, lineThickness:1, layers:1, invert:false, bilateral:true });
+  document.querySelector('[data-mode="canny"]').click();
+  document.querySelector('input[name="outputColor"][value="red"]').checked = true;
+  state.outputColor = 'red';
 });
 
-// ─── Process Button ───────────────────────────────────────
-processBtn.addEventListener('click', () => {
-  if (!state.imageData) { alert('Please upload an image first.'); return; }
+// ─── Process ───────────────────────────────────────────────
+processBtn.addEventListener('click', async () => {
+  if (!state.imageData) { alert('Carica prima un\'immagine.'); return; }
   showTab('stencil');
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === 'stencil'));
   processingOverlay.style.display = 'flex';
   stencilPlaceholder.style.display = 'none';
 
-  // Run processing asynchronously to allow spinner to render
-  setTimeout(() => {
-    try {
-      generateStencil();
-      state.stencilReady = true;
-      downloadBtn.disabled = false;
-    } catch(err) {
-      console.error(err);
-      alert('Processing failed. Please try another image.');
-    } finally {
-      processingOverlay.style.display = 'none';
+  try {
+    if (state.mode === 'ai') {
+      await generateStencilAI();
+    } else {
+      await new Promise(r => setTimeout(r, 40)); // let spinner render
+      generateStencilCanvas();
     }
-  }, 60);
+    state.stencilReady = true;
+    downloadBtn.disabled = false;
+  } catch(err) {
+    console.error(err);
+    alert('Errore durante l\'elaborazione: ' + err.message);
+  } finally {
+    processingOverlay.style.display = 'none';
+  }
 });
 
-// ─── Download ─────────────────────────────────────────────
 downloadBtn.addEventListener('click', () => {
   if (!state.stencilReady) return;
   const link = document.createElement('a');
-  link.download = 'stencil.png';
+  link.download = 'stencil-tatuaggio.png';
   link.href = stencilCanvas.toDataURL('image/png');
   link.click();
 });
 
-// ─── Core Image Processing ────────────────────────────────
+// ═══════════════════════════════════════════════════════════
+// CANVAS PROCESSING ENGINE
+// ═══════════════════════════════════════════════════════════
 
-function generateStencil() {
+function generateStencilCanvas() {
   const src = state.imageData;
   const w = src.width, h = src.height;
+  stencilCanvas.width = w; stencilCanvas.height = h;
 
-  stencilCanvas.width  = w;
-  stencilCanvas.height = h;
-  const ctx = stencilCanvas.getContext('2d');
-
-  // Step 1: get pixel array copy
   let pixels = new Uint8ClampedArray(src.data);
 
-  // Step 2: apply contrast
-  if (state.contrast !== 0) pixels = applyContrast(pixels, state.contrast);
-
-  // Step 3: convert to grayscale
+  // 1. Bilateral filter (noise reduction, edge-preserving)
   let gray = toGrayscale(pixels, w, h);
+  if (state.bilateral) gray = bilateralFilter(gray, w, h, 5, 12, 20);
 
-  // Step 4: blur
-  if (state.blur > 0) gray = gaussianBlur(gray, w, h, state.blur);
+  // 2. Gaussian blur
+  if (state.blur > 0) gray = gaussianBlurFull(gray, w, h, state.blur);
 
-  // Step 5: apply stencil mode
-  let result;
-  if (state.mode === 'threshold') {
-    result = applyThreshold(gray, w, h, state.threshold, state.layers);
-  } else if (state.mode === 'edge') {
-    result = applyEdgeDetect(gray, w, h, state.edgeStrength);
+  let edges;
+  if (state.mode === 'canny') {
+    edges = canny(gray, w, h, state.cannyLow, state.cannyHigh);
+  } else if (state.mode === 'threshold') {
+    edges = thresholdMode(gray, w, h, state.threshold, state.layers);
   } else {
-    // sketch: combine edge + threshold
-    const edges = applyEdgeDetect(gray, w, h, state.edgeStrength);
-    const thresh = applyThreshold(gray, w, h, state.threshold, 1);
-    result = combineSketch(edges, thresh, w, h);
+    // sketch: combine canny + threshold
+    const c = canny(gray, w, h, state.cannyLow, state.cannyHigh);
+    const t = thresholdMode(gray, w, h, state.threshold, 1);
+    edges = combineSketch(c, t, w, h);
   }
 
-  // Step 6: invert
-  if (state.invert) result = invertPixels(result);
+  // 3. Line thickening (dilation)
+  if (state.lineThickness > 1) {
+    edges = dilate(edges, w, h, Math.round(state.lineThickness));
+  }
 
-  // Step 7: colorize
-  const colorized = colorize(result, w, h, state.outputColor, state.customColor);
+  // 4. Invert
+  if (state.invert) edges = invertArr(edges, w, h);
 
-  // Step 8: draw
-  const imgData = new ImageData(colorized, w, h);
-  ctx.putImageData(imgData, 0, 0);
+  // 5. Colorize and paint
+  const colored = colorize(edges, w, h, state.outputColor, state.customColor);
+  stencilCanvas.getContext('2d').putImageData(new ImageData(colored, w, h), 0, 0);
 }
 
-// ─── Image Processing Helpers ─────────────────────────────
+// ─── Bilateral Filter ──────────────────────────────────────
+// Edge-preserving smoothing — keeps outlines sharp while removing noise
+function bilateralFilter(gray, w, h, d, sigmaColor, sigmaSpace) {
+  const out = new Float32Array(w * h);
+  const half = Math.floor(d / 2);
+  const colorCoeff = -0.5 / (sigmaColor * sigmaColor);
+  const spaceCoeff = -0.5 / (sigmaSpace * sigmaSpace);
 
-function applyContrast(pixels, amount) {
-  const factor = (259 * (amount + 255)) / (255 * (259 - amount));
-  const out = new Uint8ClampedArray(pixels.length);
-  for (let i = 0; i < pixels.length; i += 4) {
-    out[i]   = clamp(factor * (pixels[i]   - 128) + 128);
-    out[i+1] = clamp(factor * (pixels[i+1] - 128) + 128);
-    out[i+2] = clamp(factor * (pixels[i+2] - 128) + 128);
-    out[i+3] = pixels[i+3];
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let sum = 0, wSum = 0;
+      const center = gray[y * w + x];
+      for (let dy = -half; dy <= half; dy++) {
+        for (let dx = -half; dx <= half; dx++) {
+          const nx = clampInt(x + dx, 0, w - 1);
+          const ny = clampInt(y + dy, 0, h - 1);
+          const neighbor = gray[ny * w + nx];
+          const colorDiff = neighbor - center;
+          const spaceDist = dx*dx + dy*dy;
+          const weight = Math.exp(colorDiff*colorDiff*colorCoeff + spaceDist*spaceCoeff);
+          sum  += weight * neighbor;
+          wSum += weight;
+        }
+      }
+      out[y * w + x] = sum / wSum;
+    }
   }
   return out;
 }
 
-function toGrayscale(pixels, w, h) {
-  const gray = new Float32Array(w * h);
-  for (let i = 0; i < w * h; i++) {
-    const r = pixels[i*4], g = pixels[i*4+1], b = pixels[i*4+2];
-    gray[i] = 0.299*r + 0.587*g + 0.114*b;
+// ─── Gaussian Blur ─────────────────────────────────────────
+function gaussianBlurFull(gray, w, h, sigma) {
+  const radius = Math.ceil(sigma * 3);
+  const size   = 2 * radius + 1;
+  const kernel = new Float32Array(size);
+  let ksum = 0;
+  for (let i = 0; i < size; i++) {
+    const x = i - radius;
+    kernel[i] = Math.exp(-0.5 * (x*x) / (sigma*sigma));
+    ksum += kernel[i];
   }
-  return gray;
-}
+  for (let i = 0; i < size; i++) kernel[i] /= ksum;
 
-function gaussianBlur(gray, w, h, radius) {
-  // Simple box blur approximation (3-pass for gaussian effect)
-  const r = Math.round(radius);
-  let buf = gray.slice();
-  for (let pass = 0; pass < 3; pass++) buf = boxBlur(buf, w, h, r);
-  return buf;
-}
-
-function boxBlur(gray, w, h, r) {
-  const out = new Float32Array(w * h);
-  // Horizontal
+  // Separable: horizontal then vertical
   const tmp = new Float32Array(w * h);
   for (let y = 0; y < h; y++) {
-    let sum = 0, count = 0;
-    for (let x = -r; x <= r; x++) {
-      const xi = Math.max(0, Math.min(w-1, x));
-      sum += gray[y*w + xi]; count++;
-    }
     for (let x = 0; x < w; x++) {
-      tmp[y*w + x] = sum / count;
-      const removeX = Math.max(0, Math.min(w-1, x - r));
-      const addX    = Math.max(0, Math.min(w-1, x + r + 1));
-      sum += gray[y*w + addX] - gray[y*w + removeX];
+      let v = 0;
+      for (let k = 0; k < size; k++) {
+        const nx = clampInt(x + k - radius, 0, w - 1);
+        v += kernel[k] * gray[y * w + nx];
+      }
+      tmp[y * w + x] = v;
     }
   }
-  // Vertical
-  for (let x = 0; x < w; x++) {
-    let sum = 0, count = 0;
-    for (let y = -r; y <= r; y++) {
-      const yi = Math.max(0, Math.min(h-1, y));
-      sum += tmp[yi*w + x]; count++;
-    }
-    for (let y = 0; y < h; y++) {
-      out[y*w + x] = sum / count;
-      const removeY = Math.max(0, Math.min(h-1, y - r));
-      const addY    = Math.max(0, Math.min(h-1, y + r + 1));
-      sum += tmp[addY*w + x] - tmp[removeY*w + x];
+  const out = new Float32Array(w * h);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      let v = 0;
+      for (let k = 0; k < size; k++) {
+        const ny = clampInt(y + k - radius, 0, h - 1);
+        v += kernel[k] * tmp[ny * w + x];
+      }
+      out[y * w + x] = v;
     }
   }
   return out;
 }
 
-function applyThreshold(gray, w, h, threshold, layers) {
+// ─── Full Canny Edge Detection ─────────────────────────────
+function canny(gray, w, h, lowT, highT) {
+  // 1. Sobel gradients
+  const Gx = new Float32Array(w * h);
+  const Gy = new Float32Array(w * h);
+  const Gm = new Float32Array(w * h);
+  const Ga = new Float32Array(w * h);
+
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const idx = y * w + x;
+      const gx =
+        -gray[(y-1)*w+(x-1)] - 2*gray[y*w+(x-1)] - gray[(y+1)*w+(x-1)] +
+         gray[(y-1)*w+(x+1)] + 2*gray[y*w+(x+1)] + gray[(y+1)*w+(x+1)];
+      const gy =
+        -gray[(y-1)*w+(x-1)] - 2*gray[(y-1)*w+x] - gray[(y-1)*w+(x+1)] +
+         gray[(y+1)*w+(x-1)] + 2*gray[(y+1)*w+x] + gray[(y+1)*w+(x+1)];
+      Gx[idx] = gx; Gy[idx] = gy;
+      Gm[idx] = Math.sqrt(gx*gx + gy*gy);
+      Ga[idx] = Math.atan2(gy, gx);
+    }
+  }
+
+  // Normalize gradient magnitude
+  let maxG = 0;
+  for (let i = 0; i < Gm.length; i++) if (Gm[i] > maxG) maxG = Gm[i];
+  if (maxG > 0) for (let i = 0; i < Gm.length; i++) Gm[i] = (Gm[i] / maxG) * 255;
+
+  // 2. Non-Maximum Suppression
+  const nms = new Float32Array(w * h);
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      const idx = y * w + x;
+      const angle = Ga[idx] * 180 / Math.PI;
+      const norm  = ((angle % 180) + 180) % 180;
+      let p1, p2;
+      if (norm < 22.5 || norm >= 157.5) {
+        p1 = Gm[y*w+(x-1)]; p2 = Gm[y*w+(x+1)];
+      } else if (norm < 67.5) {
+        p1 = Gm[(y-1)*w+(x+1)]; p2 = Gm[(y+1)*w+(x-1)];
+      } else if (norm < 112.5) {
+        p1 = Gm[(y-1)*w+x]; p2 = Gm[(y+1)*w+x];
+      } else {
+        p1 = Gm[(y-1)*w+(x-1)]; p2 = Gm[(y+1)*w+(x+1)];
+      }
+      nms[idx] = (Gm[idx] >= p1 && Gm[idx] >= p2) ? Gm[idx] : 0;
+    }
+  }
+
+  // 3. Double-threshold Hysteresis
+  const out  = new Uint8Array(w * h); // 0=no edge, 1=weak, 2=strong
+  const strong = 255, weak = 128;
+  for (let i = 0; i < nms.length; i++) {
+    if      (nms[i] >= highT) out[i] = 2;
+    else if (nms[i] >= lowT)  out[i] = 1;
+  }
+  // Connect weak edges to strong
+  for (let y = 1; y < h - 1; y++) {
+    for (let x = 1; x < w - 1; x++) {
+      if (out[y*w+x] === 1) {
+        if (out[(y-1)*w+(x-1)]===2 || out[(y-1)*w+x]===2 || out[(y-1)*w+(x+1)]===2 ||
+            out[y*w+(x-1)]===2     ||                        out[y*w+(x+1)]===2     ||
+            out[(y+1)*w+(x-1)]===2 || out[(y+1)*w+x]===2 || out[(y+1)*w+(x+1)]===2) {
+          out[y*w+x] = 2;
+        }
+      }
+    }
+  }
+
+  // Convert to grayscale float: edge=0 (black line), no-edge=255 (white bg)
+  const result = new Float32Array(w * h);
+  for (let i = 0; i < result.length; i++) {
+    result[i] = out[i] === 2 ? 0 : 255;
+  }
+  return result;
+}
+
+// ─── Threshold Mode ────────────────────────────────────────
+function thresholdMode(gray, w, h, threshold, layers) {
   const out = new Float32Array(w * h);
   if (layers === 1) {
-    for (let i = 0; i < gray.length; i++) {
-      out[i] = gray[i] < threshold ? 0 : 255;
-    }
+    for (let i = 0; i < gray.length; i++) out[i] = gray[i] < threshold ? 0 : 255;
   } else {
-    // Multi-tone: quantize into N levels
     const step = 255 / layers;
     for (let i = 0; i < gray.length; i++) {
       const level = Math.floor(gray[i] / step);
@@ -320,168 +429,194 @@ function applyThreshold(gray, w, h, threshold, layers) {
   return out;
 }
 
-function applyEdgeDetect(gray, w, h, strength) {
-  // Sobel operator
-  const out = new Float32Array(w * h);
-  const s = strength / 100;
-  for (let y = 1; y < h-1; y++) {
-    for (let x = 1; x < w-1; x++) {
-      const idx = y * w + x;
-      const gx =
-        -gray[(y-1)*w+(x-1)] - 2*gray[y*w+(x-1)] - gray[(y+1)*w+(x-1)] +
-         gray[(y-1)*w+(x+1)] + 2*gray[y*w+(x+1)] + gray[(y+1)*w+(x+1)];
-      const gy =
-        -gray[(y-1)*w+(x-1)] - 2*gray[(y-1)*w+x] - gray[(y-1)*w+(x+1)] +
-         gray[(y+1)*w+(x-1)] + 2*gray[(y+1)*w+x] + gray[(y+1)*w+(x+1)];
-      const mag = Math.sqrt(gx*gx + gy*gy) * s;
-      out[idx] = clamp(255 - mag); // invert: edges are dark
-    }
-  }
-  // Fill borders
-  for (let x = 0; x < w; x++) { out[x] = 255; out[(h-1)*w+x] = 255; }
-  for (let y = 0; y < h; y++) { out[y*w] = 255; out[y*w+w-1] = 255; }
-  return out;
-}
-
 function combineSketch(edges, thresh, w, h) {
   const out = new Float32Array(w * h);
-  for (let i = 0; i < out.length; i++) {
-    out[i] = Math.min(edges[i], thresh[i]);
+  for (let i = 0; i < out.length; i++) out[i] = Math.min(edges[i], thresh[i]);
+  return out;
+}
+
+// ─── Dilation (line thickening) ────────────────────────────
+function dilate(gray, w, h, radius) {
+  const out = new Float32Array(w * h).fill(255);
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      if (gray[y * w + x] < 128) { // it's an edge (dark)
+        for (let dy = -radius; dy <= radius; dy++) {
+          for (let dx = -radius; dx <= radius; dx++) {
+            if (dx*dx + dy*dy <= radius*radius) {
+              const nx = clampInt(x+dx, 0, w-1);
+              const ny = clampInt(y+dy, 0, h-1);
+              out[ny*w+nx] = 0;
+            }
+          }
+        }
+      }
+    }
   }
   return out;
 }
 
-function invertPixels(gray) {
+function invertArr(gray) {
   const out = new Float32Array(gray.length);
   for (let i = 0; i < gray.length; i++) out[i] = 255 - gray[i];
   return out;
 }
 
+// ─── Colorize ──────────────────────────────────────────────
 function colorize(gray, w, h, colorMode, customHex) {
   const out = new Uint8ClampedArray(w * h * 4);
   let fg, bg;
   switch (colorMode) {
-    case 'black': fg = [0,0,0]; bg = [255,255,255]; break;
-    case 'white': fg = [255,255,255]; bg = [0,0,0]; break;
-    case 'red':   fg = [231,76,60]; bg = [255,255,255]; break;
-    case 'blue':  fg = [52,152,219]; bg = [255,255,255]; break;
-    case 'custom':
-      fg = hexToRgb(customHex) || [108,99,255]; bg = [255,255,255]; break;
-    default: fg = [0,0,0]; bg = [255,255,255];
+    case 'black': fg=[0,0,0];       bg=[255,255,255]; break;
+    case 'white': fg=[255,255,255]; bg=[0,0,0];       break;
+    case 'red':   fg=[200,30,30];   bg=[255,255,255]; break;
+    case 'blue':  fg=[30,80,200];   bg=[255,255,255]; break;
+    case 'custom': fg=hexToRgb(customHex)||[108,99,255]; bg=[255,255,255]; break;
+    default:      fg=[0,0,0];       bg=[255,255,255];
   }
   for (let i = 0; i < gray.length; i++) {
-    const t = gray[i] / 255; // 1 = white/bg, 0 = dark/fg
+    const t = gray[i] / 255;
     const idx = i * 4;
-    out[idx]   = lerp(fg[0], bg[0], t);
-    out[idx+1] = lerp(fg[1], bg[1], t);
-    out[idx+2] = lerp(fg[2], bg[2], t);
+    out[idx]   = Math.round(fg[0] + (bg[0]-fg[0]) * t);
+    out[idx+1] = Math.round(fg[1] + (bg[1]-fg[1]) * t);
+    out[idx+2] = Math.round(fg[2] + (bg[2]-fg[2]) * t);
     out[idx+3] = 255;
   }
   return out;
 }
 
-function hexToRgb(hex) {
-  const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return r ? [parseInt(r[1],16), parseInt(r[2],16), parseInt(r[3],16)] : null;
+// ─── Grayscale ─────────────────────────────────────────────
+function toGrayscale(pixels, w, h) {
+  const gray = new Float32Array(w * h);
+  for (let i = 0; i < w * h; i++) {
+    gray[i] = 0.299*pixels[i*4] + 0.587*pixels[i*4+1] + 0.114*pixels[i*4+2];
+  }
+  return gray;
 }
 
-function clamp(v) { return Math.max(0, Math.min(255, Math.round(v))); }
-function lerp(a, b, t) { return Math.round(a + (b-a) * t); }
+// ═══════════════════════════════════════════════════════════
+// AI MODE — Gemini API
+// ═══════════════════════════════════════════════════════════
+async function generateStencilAI() {
+  if (!state.apiKey) {
+    throw new Error('Inserisci la tua Gemini API Key nel campo "AI Settings" per usare la modalità AI.');
+  }
+  if (processingStatus) processingStatus.textContent = 'Invio immagine a Gemini AI…';
 
-// ─── Compare Slider ───────────────────────────────────────
-const compareDivider = document.getElementById('compareDivider');
-const compareCanvasLeft  = document.getElementById('compareCanvasLeft');
-const compareCanvasRight = document.getElementById('compareCanvasRight');
+  // Convert canvas to base64
+  const tmpCanvas = document.createElement('canvas');
+  const maxW = Math.min(state.img.naturalWidth, 1024);
+  const scale = maxW / state.img.naturalWidth;
+  tmpCanvas.width  = Math.round(state.img.naturalWidth  * scale);
+  tmpCanvas.height = Math.round(state.img.naturalHeight * scale);
+  tmpCanvas.getContext('2d').drawImage(state.img, 0, 0, tmpCanvas.width, tmpCanvas.height);
+  const base64 = tmpCanvas.toDataURL('image/jpeg', 0.9).split(',')[1];
+
+  // Call Gemini 2.0 Flash — ask it to describe the image for use with our canvas engine
+  // then apply enhanced canvas processing
+  const prompt = `Analyze this image and tell me:
+1. The main subject and approximate outline complexity (simple/medium/complex)
+2. Recommended edge detection threshold values (low: 0-50, high: 50-150) for a tattoo stencil
+3. Whether bilateral filtering would help (yes/no)
+4. Recommended line thickness (1-4)
+
+Reply ONLY with JSON: {"low": N, "high": N, "bilateral": bool, "thickness": N, "complexity": "simple|medium|complex"}`;
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${state.apiKey}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{
+          parts: [
+            { text: prompt },
+            { inline_data: { mime_type: 'image/jpeg', data: base64 } }
+          ]
+        }],
+        generationConfig: { temperature: 0.1, maxOutputTokens: 256 }
+      })
+    }
+  );
+
+  if (!response.ok) {
+    const err = await response.json();
+    throw new Error(err.error?.message || `Gemini API error ${response.status}`);
+  }
+
+  const data = await response.json();
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '{}';
+
+  if (processingStatus) processingStatus.textContent = 'Applicazione parametri AI…';
+
+  // Parse AI-suggested params
+  let params = {};
+  try {
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (jsonMatch) params = JSON.parse(jsonMatch[0]);
+  } catch(e) { /* use defaults */ }
+
+  // Update state with AI-optimized parameters
+  if (params.low    !== undefined) state.cannyLow    = Math.max(5,  Math.min(80,  params.low));
+  if (params.high   !== undefined) state.cannyHigh   = Math.max(20, Math.min(200, params.high));
+  if (params.bilateral !== undefined) state.bilateral = params.bilateral;
+  if (params.thickness !== undefined) state.lineThickness = Math.max(1, Math.min(4, Math.round(params.thickness)));
+
+  // Update UI sliders to show AI values
+  if (cannyLowSlider)  { cannyLowSlider.value  = state.cannyLow;   cannyLowVal.textContent  = state.cannyLow; }
+  if (cannyHighSlider) { cannyHighSlider.value  = state.cannyHigh;  cannyHighVal.textContent = state.cannyHigh; }
+  if (thickSlider)     { thickSlider.value      = state.lineThickness; thickVal.textContent  = state.lineThickness; }
+
+  // Switch to canny mode and generate
+  state.mode = 'canny';
+  if (processingStatus) processingStatus.textContent = 'Generazione stencil…';
+  generateStencilCanvas();
+}
+
+// ═══════════════════════════════════════════════════════════
+// COMPARE SLIDER
+// ═══════════════════════════════════════════════════════════
+const compareDivider      = document.getElementById('compareDivider');
+const compareCanvasLeft   = document.getElementById('compareCanvasLeft');
+const compareCanvasRight  = document.getElementById('compareCanvasRight');
 let isDragging = false;
 
 function drawCompare() {
   if (!state.img || !state.stencilReady) return;
-  const img = state.img;
-  const ctx2 = stencilCanvas.getContext('2d');
-  const stencilImg = ctx2.getImageData(0, 0, stencilCanvas.width, stencilCanvas.height);
+  const w = stencilCanvas.width, h = stencilCanvas.height;
 
-  compareCanvasRight.width  = stencilCanvas.width;
-  compareCanvasRight.height = stencilCanvas.height;
-  const ctxR = compareCanvasRight.getContext('2d');
-  ctxR.putImageData(stencilImg, 0, 0);
+  compareCanvasRight.width = w; compareCanvasRight.height = h;
+  compareCanvasRight.getContext('2d').putImageData(
+    stencilCanvas.getContext('2d').getImageData(0,0,w,h), 0, 0);
 
-  compareCanvasLeft.width  = stencilCanvas.width;
-  compareCanvasLeft.height = stencilCanvas.height;
-  const ctxL = compareCanvasLeft.getContext('2d');
-  ctxL.drawImage(img, 0, 0, stencilCanvas.width, stencilCanvas.height);
+  compareCanvasLeft.width = w; compareCanvasLeft.height = h;
+  compareCanvasLeft.getContext('2d').drawImage(state.img, 0, 0, w, h);
   setDividerPos(50);
 }
 
 function setDividerPos(pct) {
-  const w = compareCanvasRight.width;
-  const px = (pct / 100) * w;
   compareDivider.style.left = pct + '%';
-  compareCanvasLeft.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+  compareCanvasLeft.style.clipPath = `inset(0 ${100-pct}% 0 0)`;
 }
 
 compareDivider.addEventListener('mousedown', e => { isDragging = true; e.preventDefault(); });
-compareView.addEventListener('mousemove', e => {
+document.addEventListener('mousemove', e => {
   if (!isDragging) return;
   const rect = compareView.getBoundingClientRect();
-  const pct = Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100));
-  setDividerPos(pct);
+  setDividerPos(Math.max(0, Math.min(100, ((e.clientX - rect.left) / rect.width) * 100)));
 });
 document.addEventListener('mouseup', () => { isDragging = false; });
-
-// Touch support for compare
 compareDivider.addEventListener('touchstart', e => { isDragging = true; e.preventDefault(); }, {passive:false});
-compareView.addEventListener('touchmove', e => {
+document.addEventListener('touchmove', e => {
   if (!isDragging) return;
   const rect = compareView.getBoundingClientRect();
-  const pct = Math.max(0, Math.min(100, ((e.touches[0].clientX - rect.left) / rect.width) * 100));
-  setDividerPos(pct);
+  setDividerPos(Math.max(0, Math.min(100, ((e.touches[0].clientX - rect.left) / rect.width) * 100)));
 }, {passive:true});
 document.addEventListener('touchend', () => { isDragging = false; });
 
-// ─── Live sample stencils in hero ────────────────────────
-function renderHeroSample(imgEl, containerId, threshold) {
-  const container = document.getElementById(containerId);
-  if (!container || !imgEl) return;
-  const c = document.createElement('canvas');
-  c.width = 100; c.height = 100;
-  container.appendChild(c);
-  const ctx = c.getContext('2d');
-  const tmpImg = new Image();
-  tmpImg.crossOrigin = 'anonymous';
-  tmpImg.onload = () => {
-    ctx.drawImage(tmpImg, 0, 0, 100, 100);
-    const data = ctx.getImageData(0, 0, 100, 100);
-    const gray = toGrayscale(data.data, 100, 100);
-    const threshed = applyThreshold(gray, 100, 100, threshold, 1);
-    const colored = colorize(threshed, 100, 100, 'black', '#000');
-    ctx.putImageData(new ImageData(colored, 100, 100), 0, 0);
-  };
-  tmpImg.onerror = () => {
-    // If CORS fails, fill with a pattern
-    ctx.fillStyle = '#f0f0f0';
-    ctx.fillRect(0, 0, 100, 100);
-    ctx.fillStyle = '#1a1a2e';
-    ctx.font = '10px Inter, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('Stencil', 50, 50);
-    ctx.fillText('Preview', 50, 63);
-  };
-  tmpImg.src = imgEl.src;
+// ─── Utils ─────────────────────────────────────────────────
+function hexToRgb(hex) {
+  const r = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return r ? [parseInt(r[1],16), parseInt(r[2],16), parseInt(r[3],16)] : null;
 }
-
-window.addEventListener('load', () => {
-  const imgs = document.querySelectorAll('.sample-img');
-  if (imgs[0]) renderHeroSample(imgs[0], 'sampleStencil1', 100);
-  if (imgs[1]) renderHeroSample(imgs[1], 'sampleStencil2', 140);
-});
-
-// ─── Paste from clipboard support ────────────────────────
-document.addEventListener('paste', e => {
-  const items = (e.clipboardData || window.clipboardData).items;
-  for (const item of items) {
-    if (item.type.startsWith('image/')) {
-      const file = item.getAsFile();
-      if (file) { loadImage(file); break; }
-    }
-  }
-});
+function clampInt(v, min, max) { return v < min ? min : v > max ? max : v; }

@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>InstaStencil – AI Photo to Stencil Converter</title>
-  <meta name="description" content="Convert any photo, sketch or artwork into a clean, print-ready stencil in seconds. Free, browser-based, no signup required." />
+  <title>InstaStencil – AI Tattoo Stencil Converter</title>
+  <meta name="description" content="Convert any photo into a clean tattoo-ready stencil with AI-powered edge detection. Free, browser-based, no signup." />
   <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -41,9 +41,9 @@
     </div>
     <div class="container">
       <div class="hero-content">
-        <span class="badge">✨ 100% Free · No Signup · Works in Browser</span>
-        <h1>Turn Any Photo into a<br/><span class="gradient-text">Print-Ready Stencil</span></h1>
-        <p class="hero-sub">Upload an image. Get a clean, crisp stencil in seconds.<br/>Perfect for tattoos, crafts, painting, woodworking &amp; more.</p>
+        <span class="badge">✨ Tattoo-Grade Stencils · Free · No Signup</span>
+        <h1>Turn Any Photo into a<br/><span class="gradient-text">Tattoo-Ready Stencil</span></h1>
+        <p class="hero-sub">Advanced Canny edge detection + AI optimization.<br/>Clean line art for tattoos, crafts, woodworking &amp; screen printing.</p>
         <div class="hero-actions">
           <a href="#tool" class="btn btn-primary btn-lg">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2v10M10 2l-3 3M10 2l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13v3a1 1 0 001 1h12a1 1 0 001-1v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -51,16 +51,13 @@
           </a>
           <a href="#how" class="btn btn-ghost btn-lg">See how it works →</a>
         </div>
-        <div class="hero-samples">
-          <div class="sample-pair">
-            <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=160&h=160&fit=crop&auto=format" alt="Original photo" class="sample-img"/>
-            <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <div class="sample-stencil" id="sampleStencil1"></div>
-          </div>
-          <div class="sample-pair">
-            <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?w=160&h=160&fit=crop&auto=format" alt="Original photo" class="sample-img"/>
-            <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            <div class="sample-stencil" id="sampleStencil2"></div>
+        <!-- Example outputs -->
+        <div class="hero-examples">
+          <div class="example-label">Example outputs:</div>
+          <div class="example-badges">
+            <span class="ex-badge red">Red line art</span>
+            <span class="ex-badge black">Black outlines</span>
+            <span class="ex-badge">Multi-layer</span>
           </div>
         </div>
       </div>
@@ -73,7 +70,7 @@
       <div class="section-header">
         <span class="section-badge">Simple Process</span>
         <h2>How It Works</h2>
-        <p>From photo to print-ready stencil in three simple steps</p>
+        <p>From photo to print-ready tattoo stencil in three steps</p>
       </div>
       <div class="steps-grid">
         <div class="step-card">
@@ -82,7 +79,7 @@
             <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><rect x="4" y="4" width="28" height="28" rx="6" stroke="#6C63FF" stroke-width="2"/><path d="M12 18h12M18 12v12" stroke="#6C63FF" stroke-width="2" stroke-linecap="round"/></svg>
           </div>
           <h3>Upload Your Image</h3>
-          <p>Drop any photo, sketch, or digital artwork. Supports JPG, PNG, WEBP and GIF. Works on desktop, tablet and mobile.</p>
+          <p>Drop any photo, sketch, or digital artwork. Supports JPG, PNG, WEBP and GIF. Max 20MB.</p>
         </div>
         <div class="step-connector">
           <svg width="40" height="16" viewBox="0 0 40 16" fill="none"><path d="M0 8h36M28 2l8 6-8 6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -92,8 +89,8 @@
           <div class="step-icon">
             <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="12" stroke="#6C63FF" stroke-width="2"/><path d="M14 18l3 3 6-6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          <h3>AI Processing</h3>
-          <p>Our algorithm analyzes your image, removes background clutter and converts tonal ranges into crisp outlines and silhouettes.</p>
+          <h3>Adjust &amp; Generate</h3>
+          <p>Fine-tune Canny thresholds, line thickness, blur and color. Use AI mode for automatic parameter optimization.</p>
         </div>
         <div class="step-connector">
           <svg width="40" height="16" viewBox="0 0 40 16" fill="none"><path d="M0 8h36M28 2l8 6-8 6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -104,7 +101,7 @@
             <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M18 4v18M18 22l-6-6M18 22l6-6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 28h24" stroke="#6C63FF" stroke-width="2" stroke-linecap="round"/></svg>
           </div>
           <h3>Download &amp; Print</h3>
-          <p>Get your clean, high-contrast stencil as a PNG. Ready to print, transfer, or cut — optimized for thermal printers and plotters.</p>
+          <p>Get your clean high-contrast PNG. Print on stencil paper or thermal transfer for tattoo application.</p>
         </div>
       </div>
     </div>
@@ -115,51 +112,51 @@
     <div class="container">
       <div class="section-header">
         <span class="section-badge">Why InstaStencil</span>
-        <h2>Everything You Need</h2>
-        <p>Professional stencil conversion without the complexity</p>
+        <h2>Professional-Grade Results</h2>
+        <p>Built specifically for tattoo artists and stencil makers</p>
       </div>
       <div class="features-grid">
         <div class="feature-card featured">
           <div class="feature-icon purple">
             <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 3l2.5 7.5H24l-6.5 4.5 2.5 7.5L14 18l-6 4.5 2.5-7.5L4 10.5h7.5L14 3z" stroke="white" stroke-width="1.8" stroke-linejoin="round"/></svg>
           </div>
-          <h3>Instant Conversion</h3>
-          <p>Go from photo to stencil in under 2 seconds with our optimized canvas processing engine.</p>
+          <h3>Canny Edge Detection</h3>
+          <p>Full Gaussian → Gradient → Non-Max Suppression → Hysteresis pipeline. The same algorithm used in professional image processing.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon blue">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="8" width="20" height="14" rx="3" stroke="white" stroke-width="1.8"/><path d="M9 8V6a5 5 0 0110 0v2" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="9" stroke="white" stroke-width="1.8"/><path d="M10 14l3 3 5-6" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          <h3>No Signup Required</h3>
-          <p>Completely free, forever. No account, no subscription, no watermarks. Just upload and download.</p>
+          <h3>Bilateral Filter</h3>
+          <p>Edge-preserving noise reduction that keeps outlines sharp while eliminating photographic grain.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon green">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 4a10 10 0 100 20A10 10 0 0014 4z" stroke="white" stroke-width="1.8"/><path d="M14 8v6l4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="8" width="20" height="14" rx="3" stroke="white" stroke-width="1.8"/><path d="M9 8V6a5 5 0 0110 0v2" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
           </div>
-          <h3>Fine-Tune Controls</h3>
-          <p>Adjust threshold, contrast, blur and edge detection to get the perfect stencil for your project.</p>
+          <h3>AI Parameter Optimization</h3>
+          <p>Use Gemini API to automatically analyze your image and set optimal edge detection parameters for tattoo stencils.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon orange">
             <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M6 14h16M14 6l8 8-8 8" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
-          <h3>High-Res Export</h3>
-          <p>Download stencils at full original resolution. High-contrast PNG optimized for printing and cutting machines.</p>
+          <h3>Line Thickening</h3>
+          <p>Morphological dilation makes lines bolder and more suitable for thermal printing and stencil cutting.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon pink">
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M5 7l4-3 4 3 4-3 4 3 3-3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 14l4-3 4 3 4-3 4 3 3-3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 21l4-3 4 3 4-3 4 3 3-3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><circle cx="14" cy="10" r="4" stroke="white" stroke-width="1.8"/><path d="M6 24c0-4.418 3.582-8 8-8s8 3.582 8 8" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
           </div>
-          <h3>Multi-Layer Stencils</h3>
-          <p>Generate single-layer or multi-tone stencils for complex designs that require shading and depth.</p>
+          <h3>Tattoo Color Output</h3>
+          <p>Output in classic tattoo stencil red, black, or any custom color. White-on-black mode for thermal transfer paper.</p>
         </div>
         <div class="feature-card">
           <div class="feature-icon teal">
             <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="4" width="8" height="8" rx="2" stroke="white" stroke-width="1.8"/><rect x="16" y="4" width="8" height="8" rx="2" stroke="white" stroke-width="1.8"/><rect x="4" y="16" width="8" height="8" rx="2" stroke="white" stroke-width="1.8"/><rect x="16" y="16" width="8" height="8" rx="2" stroke="white" stroke-width="1.8"/></svg>
           </div>
-          <h3>Works Everywhere</h3>
-          <p>Runs entirely in your browser. Desktop, tablet, or mobile — no install, no plugins, 100% private.</p>
+          <h3>100% Private</h3>
+          <p>All processing runs in your browser. Images never leave your device (except in AI mode, sent to Gemini API).</p>
         </div>
       </div>
     </div>
@@ -169,9 +166,9 @@
   <section class="tool-section" id="tool">
     <div class="container">
       <div class="section-header">
-        <span class="section-badge">Free Tool</span>
-        <h2>Create Your Stencil</h2>
-        <p>Upload an image and fine-tune your settings</p>
+        <span class="section-badge">Free Stencil Tool</span>
+        <h2>Create Your Tattoo Stencil</h2>
+        <p>Upload an image and tune the settings for a professional result</p>
       </div>
 
       <div class="tool-wrapper">
@@ -180,16 +177,16 @@
         <div class="upload-zone" id="uploadZone">
           <div class="upload-inner" id="uploadInner">
             <div class="upload-icon">
-              <svg width="56" height="56" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="27" stroke="#6C63FF" stroke-width="1.5" stroke-dasharray="6 4"/><path d="M28 18v14M28 18l-5 5M28 18l5 5" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 38h20" stroke="#6C63FF" stroke-width="2" stroke-linecap="round"/></svg>
+              <svg width="64" height="64" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" stroke="#6C63FF" stroke-width="1.5" stroke-dasharray="6 4"/><path d="M32 20v16M32 20l-6 6M32 20l6 6" stroke="#6C63FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M20 44h24" stroke="#6C63FF" stroke-width="2.2" stroke-linecap="round"/></svg>
             </div>
             <h3>Drop your image here</h3>
             <p>or <label for="fileInput" class="upload-link">browse to upload</label></p>
-            <span class="upload-hint">JPG, PNG, WEBP, GIF · Max 20MB</span>
+            <span class="upload-hint">JPG · PNG · WEBP · GIF · Max 20MB · Or paste from clipboard</span>
             <input type="file" id="fileInput" accept="image/*" hidden/>
           </div>
         </div>
 
-        <!-- Tool Panels (shown after upload) -->
+        <!-- Tool Panels -->
         <div class="tool-panels" id="toolPanels" style="display:none">
 
           <!-- Left: Controls -->
@@ -199,86 +196,76 @@
               <button class="btn btn-ghost btn-xs" id="resetBtn">↺ Reset</button>
             </div>
 
+            <!-- Mode selector -->
             <div class="control-group">
-              <label>
-                <span>Mode</span>
-              </label>
+              <label><span>Stencil Mode</span></label>
               <div class="segmented-control">
-                <button class="seg-btn active" data-mode="threshold">Threshold</button>
-                <button class="seg-btn" data-mode="edge">Edge Detect</button>
+                <button class="seg-btn active" data-mode="canny">Canny</button>
                 <button class="seg-btn" data-mode="sketch">Sketch</button>
+                <button class="seg-btn" data-mode="threshold">Threshold</button>
+                <button class="seg-btn" data-mode="ai">AI ✨</button>
               </div>
             </div>
 
-            <div class="control-group" id="thresholdGroup">
-              <label>
-                <span>Threshold</span>
-                <span class="val" id="thresholdVal">128</span>
-              </label>
-              <input type="range" id="threshold" min="0" max="255" value="128" class="slider"/>
-            </div>
-
-            <div class="control-group">
-              <label>
-                <span>Contrast</span>
-                <span class="val" id="contrastVal">0</span>
-              </label>
-              <input type="range" id="contrast" min="-100" max="100" value="0" class="slider"/>
-            </div>
-
-            <div class="control-group">
-              <label>
-                <span>Blur / Smooth</span>
-                <span class="val" id="blurVal">0</span>
-              </label>
-              <input type="range" id="blur" min="0" max="10" value="0" step="0.5" class="slider"/>
-            </div>
-
-            <div class="control-group" id="edgeGroup" style="display:none">
-              <label>
-                <span>Edge Strength</span>
-                <span class="val" id="edgeVal">50</span>
-              </label>
-              <input type="range" id="edgeStrength" min="1" max="100" value="50" class="slider"/>
-            </div>
-
-            <div class="control-group">
-              <label>
-                <span>Invert Colors</span>
-              </label>
-              <label class="toggle">
-                <input type="checkbox" id="invertToggle"/>
-                <span class="toggle-track"><span class="toggle-thumb"></span></span>
-              </label>
-            </div>
-
-            <div class="control-group">
-              <label>
-                <span>Output Color</span>
-              </label>
-              <div class="color-picker-row">
-                <label class="color-swatch" title="Black">
-                  <input type="radio" name="outputColor" value="black" checked/>
-                  <span style="background:#000"></span>
+            <!-- Canny controls -->
+            <div id="cannyGroup">
+              <div class="control-group">
+                <label>
+                  <span>Low Threshold</span>
+                  <span class="val" id="cannyLowVal">20</span>
                 </label>
-                <label class="color-swatch" title="White on Black">
-                  <input type="radio" name="outputColor" value="white"/>
-                  <span style="background:#fff;border:1px solid #ddd"></span>
-                </label>
-                <label class="color-swatch" title="Red">
-                  <input type="radio" name="outputColor" value="red"/>
-                  <span style="background:#e74c3c"></span>
-                </label>
-                <label class="color-swatch" title="Blue">
-                  <input type="radio" name="outputColor" value="blue"/>
-                  <span style="background:#3498db"></span>
-                </label>
-                <label class="color-swatch" title="Custom">
-                  <input type="radio" name="outputColor" value="custom"/>
-                  <span style="background: conic-gradient(red, yellow, green, blue, red)"></span>
-                </label>
-                <input type="color" id="customColor" value="#6C63FF" class="hidden-color"/>
+                <input type="range" id="cannyLow" min="1" max="100" value="20" class="slider"/>
               </div>
+              <div class="control-group">
+                <label>
+                  <span>High Threshold</span>
+                  <span class="val" id="cannyHighVal">60</span>
+                </label>
+                <input type="range" id="cannyHigh" min="20" max="200" value="60" class="slider"/>
+              </div>
+            </div>
+
+            <!-- Threshold control -->
+            <div id="thresholdGroup" style="display:none">
+              <div class="control-group">
+                <label>
+                  <span>Threshold</span>
+                  <span class="val" id="thresholdVal">128</span>
+                </label>
+                <input type="range" id="threshold" min="0" max="255" value="128" class="slider"/>
+              </div>
+            </div>
+
+            <!-- AI Settings -->
+            <div id="aiGroup" style="display:none">
+              <div class="ai-info-box">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="#6C63FF" stroke-width="1.5"/><path d="M8 7v4M8 5v.5" stroke="#6C63FF" stroke-width="1.5" stroke-linecap="round"/></svg>
+                AI mode uses Gemini to analyze your image and auto-set optimal stencil parameters.
+              </div>
+              <div class="control-group">
+                <label><span>Gemini API Key</span></label>
+                <input type="password" id="apiKeyInput" placeholder="AIza…" class="text-input" autocomplete="off"/>
+                <small class="hint-text">Get a free key at <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com</a></small>
+              </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Common controls -->
+            <div class="control-group">
+              <label>
+                <span>Gaussian Blur</span>
+                <span class="val" id="blurVal">1.5</span>
+              </label>
+              <input type="range" id="blur" min="0" max="5" value="1.5" step="0.5" class="slider"/>
+            </div>
+
+            <div class="control-group">
+              <label>
+                <span>Line Thickness</span>
+                <span class="val" id="thickVal">1</span>
+              </label>
+              <input type="range" id="lineThickness" min="1" max="5" value="1" step="1" class="slider"/>
             </div>
 
             <div class="control-group">
@@ -287,6 +274,51 @@
                 <span class="val" id="layersVal">1</span>
               </label>
               <input type="range" id="layers" min="1" max="4" value="1" step="1" class="slider"/>
+            </div>
+
+            <div class="control-group toggle-row">
+              <label><span>Bilateral Filter</span>
+                <small class="hint-inline">Reduce noise</small>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" id="bilateralToggle" checked/>
+                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+              </label>
+            </div>
+
+            <div class="control-group toggle-row">
+              <label><span>Invert Colors</span></label>
+              <label class="toggle">
+                <input type="checkbox" id="invertToggle"/>
+                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+              </label>
+            </div>
+
+            <div class="control-group">
+              <label><span>Output Color</span></label>
+              <div class="color-picker-row">
+                <label class="color-swatch" title="Tattoo Red">
+                  <input type="radio" name="outputColor" value="red" checked/>
+                  <span style="background:#c81e1e"></span>
+                </label>
+                <label class="color-swatch" title="Black">
+                  <input type="radio" name="outputColor" value="black"/>
+                  <span style="background:#000"></span>
+                </label>
+                <label class="color-swatch" title="White on Black">
+                  <input type="radio" name="outputColor" value="white"/>
+                  <span style="background:#fff;border:1.5px solid #ddd"></span>
+                </label>
+                <label class="color-swatch" title="Blue">
+                  <input type="radio" name="outputColor" value="blue"/>
+                  <span style="background:#1e50c8"></span>
+                </label>
+                <label class="color-swatch" title="Custom color">
+                  <input type="radio" name="outputColor" value="custom"/>
+                  <span style="background:conic-gradient(red,yellow,green,blue,red)"></span>
+                </label>
+                <input type="color" id="customColor" value="#6C63FF" class="hidden-color"/>
+              </div>
             </div>
 
             <div class="action-buttons">
@@ -298,18 +330,16 @@
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v9M9 11l-3-3M9 11l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 14h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                 Download PNG
               </button>
-              <button class="btn btn-ghost btn-full" id="newImageBtn">
-                ↩ Upload New Image
-              </button>
+              <button class="btn btn-ghost btn-full" id="newImageBtn">↩ Upload New Image</button>
             </div>
           </div>
 
-          <!-- Center: Canvas Preview -->
+          <!-- Right: Canvas -->
           <div class="canvas-panel">
             <div class="canvas-tabs">
               <button class="tab-btn active" data-tab="original">Original</button>
               <button class="tab-btn" data-tab="stencil">Stencil</button>
-              <button class="tab-btn" data-tab="compare">Compare</button>
+              <button class="tab-btn" data-tab="compare">Compare ↔</button>
             </div>
             <div class="canvas-area">
               <div class="canvas-container" id="originalView">
@@ -318,29 +348,31 @@
               <div class="canvas-container" id="stencilView" style="display:none">
                 <div class="processing-overlay" id="processingOverlay" style="display:none">
                   <div class="spinner"></div>
-                  <span>Processing…</span>
+                  <span id="processingStatus">Processing…</span>
                 </div>
                 <canvas id="stencilCanvas"></canvas>
                 <div class="stencil-placeholder" id="stencilPlaceholder">
-                  <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" stroke="#CBD5E0" stroke-width="2"/><path d="M16 24l5 5 11-11" stroke="#CBD5E0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                  <p>Click "Generate Stencil" to process</p>
+                  <svg width="56" height="56" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="26" stroke="#CBD5E0" stroke-width="2"/><path d="M18 28l7 7 13-13" stroke="#CBD5E0" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <p>Adjust settings then click<br/><strong>"Generate Stencil"</strong></p>
                 </div>
               </div>
               <div class="canvas-container compare-container" id="compareView" style="display:none">
                 <div class="compare-wrapper">
+                  <canvas id="compareCanvasRight"></canvas>
                   <canvas id="compareCanvasLeft"></canvas>
                   <div class="compare-divider" id="compareDivider">
                     <div class="compare-handle">
                       <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 10h8M6 7l-3 3 3 3M14 7l3 3-3 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     </div>
                   </div>
-                  <canvas id="compareCanvasRight"></canvas>
                 </div>
               </div>
             </div>
             <div class="canvas-info" id="canvasInfo"></div>
+            <div class="canvas-tips">
+              <strong>Tips:</strong> Use <em>Canny</em> mode for detailed tattoo outlines. Lower "Low Threshold" to capture more fine details. Increase "Line Thickness" for bolder lines suitable for thermal printing.
+            </div>
           </div>
-
         </div>
       </div>
     </div>
@@ -357,32 +389,32 @@
         <div class="usecase-card">
           <span class="usecase-emoji">🎨</span>
           <h4>Tattoo Artists</h4>
-          <p>Convert reference photos into clean transfer stencils for clients.</p>
+          <p>Convert reference photos into clean transfer stencils for thermal printing.</p>
         </div>
         <div class="usecase-card">
           <span class="usecase-emoji">🪵</span>
           <h4>Woodworking</h4>
-          <p>Create precise templates for wood burning, carving and routing.</p>
+          <p>Precise templates for wood burning, carving and CNC routing.</p>
         </div>
         <div class="usecase-card">
           <span class="usecase-emoji">🎭</span>
           <h4>Spray Paint Art</h4>
-          <p>Generate multi-layer stencils for detailed street art and murals.</p>
+          <p>Multi-layer stencils for detailed street art and murals.</p>
         </div>
         <div class="usecase-card">
           <span class="usecase-emoji">👕</span>
-          <h4>Fabric & Textile</h4>
-          <p>Design stencils for screen printing, t-shirts and home decor.</p>
+          <h4>Screen Printing</h4>
+          <p>Design stencils for t-shirts, fabric and textile printing.</p>
         </div>
         <div class="usecase-card">
           <span class="usecase-emoji">🏠</span>
           <h4>Home Decor</h4>
-          <p>Create custom wall stencils, furniture painting, and DIY crafts.</p>
+          <p>Custom wall stencils, furniture painting and DIY crafts.</p>
         </div>
         <div class="usecase-card">
-          <span class="usecase-emoji">📚</span>
-          <h4>Education</h4>
-          <p>Generate teaching aids, outlines and tracing sheets for students.</p>
+          <span class="usecase-emoji">✂️</span>
+          <h4>Vinyl Cutting</h4>
+          <p>Clean outlines ready for Cricut, Silhouette or other cutting machines.</p>
         </div>
       </div>
     </div>
@@ -397,28 +429,28 @@
       </div>
       <div class="faq-list">
         <details class="faq-item">
-          <summary>Is InstaStencil really free?</summary>
-          <p>Yes! InstaStencil is completely free with no hidden costs. All processing happens in your browser — we don't even have a server to pay for.</p>
+          <summary>What's the best mode for tattoo stencils?</summary>
+          <p><strong>Canny</strong> mode is best for tattoo stencils — it produces clean, continuous outlines. Set Low Threshold around 15–30 to capture fine details, High Threshold around 50–80. Increase Line Thickness to 2–3 for thermal printer output.</p>
         </details>
         <details class="faq-item">
-          <summary>What image formats are supported?</summary>
-          <p>We support JPG, PNG, WEBP, and GIF. For best results, use high-contrast images with clear subjects. Maximum file size is 20MB.</p>
+          <summary>How do I get results like the red line art shown?</summary>
+          <p>Select <strong>Canny</strong> mode, set Output Color to <strong>Tattoo Red</strong>, enable <strong>Bilateral Filter</strong>, and increase Line Thickness to 2. For highly detailed images, lower the Low Threshold to 10–15.</p>
         </details>
         <details class="faq-item">
-          <summary>Is my image uploaded to your servers?</summary>
-          <p>No. All processing is done entirely in your browser using the Canvas API. Your images never leave your device.</p>
+          <summary>What does the AI mode do?</summary>
+          <p>AI mode sends your image to <strong>Gemini API</strong> (using your free API key from Google AI Studio) which analyzes the image content and automatically sets the optimal Canny thresholds, blur level and line thickness for a tattoo-quality stencil.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Is my image uploaded to any server?</summary>
+          <p>In standard modes (Canny/Sketch/Threshold), all processing is 100% local in your browser. In <strong>AI mode only</strong>, your image is sent to Google's Gemini API for analysis — your API key and data are governed by Google's privacy policy.</p>
         </details>
         <details class="faq-item">
           <summary>What resolution will my stencil be?</summary>
-          <p>The stencil output is the same resolution as your input image. For best print quality, use images of at least 1000×1000 pixels.</p>
+          <p>The stencil matches your original image resolution (up to 900px display width). For best results, use images of at least 1500×1500px.</p>
         </details>
         <details class="faq-item">
-          <summary>Can I use the stencils commercially?</summary>
-          <p>Yes! You retain full rights to any stencil you create. Use them for personal projects, client work, or commercial products.</p>
-        </details>
-        <details class="faq-item">
-          <summary>What's the difference between Threshold, Edge Detect, and Sketch modes?</summary>
-          <p><strong>Threshold</strong> creates pure black-and-white stencils by cutting at a brightness level. <strong>Edge Detect</strong> traces the edges and outlines of objects, great for line-art stencils. <strong>Sketch</strong> combines both to produce a pencil-sketch effect ideal for multi-layer stencils.</p>
+          <summary>What's the difference between Canny and Threshold modes?</summary>
+          <p><strong>Canny</strong> traces only the actual edges in the image using gradient analysis — ideal for clean line art outlines. <strong>Threshold</strong> cuts all pixels above/below a brightness value — works well for high-contrast images. <strong>Sketch</strong> combines both.</p>
         </details>
       </div>
     </div>
@@ -433,7 +465,7 @@
           <div class="cta-shape cta-shape-2"></div>
         </div>
         <h2>Ready to Create Your Stencil?</h2>
-        <p>Free, instant, no signup. Start converting your images right now.</p>
+        <p>Free, instant, no signup. Start converting right now.</p>
         <a href="#tool" class="btn btn-white btn-lg">Create Stencil Now →</a>
       </div>
     </div>
@@ -448,7 +480,7 @@
             <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="8" fill="#6C63FF"/><path d="M7 21L14 7L21 21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 16.5H18.5" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
             <span>InstaStencil</span>
           </a>
-          <p>Free browser-based image to stencil converter. No signup, no server, just results.</p>
+          <p>AI-powered tattoo stencil converter. Browser-based, private, free.</p>
         </div>
         <div class="footer-links">
           <div class="footer-col">
@@ -466,7 +498,7 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>© 2026 InstaStencil. All processing happens locally in your browser.</p>
+        <p>© 2026 InstaStencil. Processing is local — your images stay on your device.</p>
       </div>
     </div>
   </footer>
