@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InstaStencil – AI Photo to Stencil Converter</title>
+  <meta name="description" content="Convert any photo, sketch or artwork into a clean, print-ready stencil in seconds. Free, browser-based, no signup required." />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="#" class="logo">
+        <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+          <rect width="28" height="28" rx="8" fill="#6C63FF"/>
+          <path d="M7 21L14 7L21 21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9.5 16.5H18.5" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+        <span>InstaStencil</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#how">How it works</a></li>
+        <li><a href="#features">Features</a></li>
+        <li><a href="#tool">Try it free</a></li>
+      </ul>
+      <a href="#tool" class="btn btn-primary btn-sm">Try Free</a>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero">
+    <div class="hero-bg-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <span class="badge">✨ 100% Free · No Signup · Works in Browser</span>
+        <h1>Turn Any Photo into a<br/><span class="gradient-text">Print-Ready Stencil</span></h1>
+        <p class="hero-sub">Upload an image. Get a clean, crisp stencil in seconds.<br/>Perfect for tattoos, crafts, painting, woodworking &amp; more.</p>
+        <div class="hero-actions">
+          <a href="#tool" class="btn btn-primary btn-lg">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2v10M10 2l-3 3M10 2l3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 13v3a1 1 0 001 1h12a1 1 0 001-1v-3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Upload Your Image
+          </a>
+          <a href="#how" class="btn btn-ghost btn-lg">See how it works →</a>
+        </div>
+        <div class="hero-samples">
+          <div class="sample-pair">
+            <img src="https://images.unsplash.com/photo-1587300003388-59208cc962cb?w=160&h=160&fit=crop&auto=format" alt="Original photo" class="sample-img"/>
+            <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="sample-stencil" id="sampleStencil1"></div>
+          </div>
+          <div class="sample-pair">
+            <img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?w=160&h=160&fit=crop&auto=format" alt="Original photo" class="sample-img"/>
+            <svg class="arrow-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <div class="sample-stencil" id="sampleStencil2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section class="how-section" id="how">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Simple Process</span>
+        <h2>How It Works</h2>
+        <p>From photo to print-ready stencil in three simple steps</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <div class="step-icon">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><rect x="4" y="4" width="28" height="28" rx="6" stroke="#6C63FF" stroke-width="2"/><path d="M12 18h12M18 12v12" stroke="#6C63FF" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Upload Your Image</h3>
+          <p>Drop any photo, sketch, or digital artwork. Supports JPG, PNG, WEBP and GIF. Works on desktop, tablet and mobile.</p>
+        </div>
+        <div class="step-connector">
+          <svg width="40" height="16" viewBox="0 0 40 16" fill="none"><path d="M0 8h36M28 2l8 6-8 6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <div class="step-icon">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="12" stroke="#6C63FF" stroke-width="2"/><path d="M14 18l3 3 6-6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>AI Processing</h3>
+          <p>Our algorithm analyzes your image, removes background clutter and converts tonal ranges into crisp outlines and silhouettes.</p>
+        </div>
+        <div class="step-connector">
+          <svg width="40" height="16" viewBox="0 0 40 16" fill="none"><path d="M0 8h36M28 2l8 6-8 6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <div class="step-icon">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none"><path d="M18 4v18M18 22l-6-6M18 22l6-6" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M6 28h24" stroke="#6C63FF" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Download &amp; Print</h3>
+          <p>Get your clean, high-contrast stencil as a PNG. Ready to print, transfer, or cut — optimized for thermal printers and plotters.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FEATURES ===== -->
+  <section class="features-section" id="features">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Why InstaStencil</span>
+        <h2>Everything You Need</h2>
+        <p>Professional stencil conversion without the complexity</p>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card featured">
+          <div class="feature-icon purple">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 3l2.5 7.5H24l-6.5 4.5 2.5 7.5L14 18l-6 4.5 2.5-7.5L4 10.5h7.5L14 3z" stroke="white" stroke-width="1.8" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Instant Conversion</h3>
+          <p>Go from photo to stencil in under 2 seconds with our optimized canvas processing engine.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon blue">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="8" width="20" height="14" rx="3" stroke="white" stroke-width="1.8"/><path d="M9 8V6a5 5 0 0110 0v2" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </div>
+          <h3>No Signup Required</h3>
+          <p>Completely free, forever. No account, no subscription, no watermarks. Just upload and download.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon green">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M14 4a10 10 0 100 20A10 10 0 0014 4z" stroke="white" stroke-width="1.8"/><path d="M14 8v6l4 4" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Fine-Tune Controls</h3>
+          <p>Adjust threshold, contrast, blur and edge detection to get the perfect stencil for your project.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon orange">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M6 14h16M14 6l8 8-8 8" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>High-Res Export</h3>
+          <p>Download stencils at full original resolution. High-contrast PNG optimized for printing and cutting machines.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon pink">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><path d="M5 7l4-3 4 3 4-3 4 3 3-3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 14l4-3 4 3 4-3 4 3 3-3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 21l4-3 4 3 4-3 4 3 3-3" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h3>Multi-Layer Stencils</h3>
+          <p>Generate single-layer or multi-tone stencils for complex designs that require shading and depth.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon teal">
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="4" y="4" width="8" height="8" rx="2" stroke="white" stroke-width="1.8"/><rect x="16" y="4" width="8" height="8" rx="2" stroke="white" stroke-width="1.8"/><rect x="4" y="16" width="8" height="8" rx="2" stroke="white" stroke-width="1.8"/><rect x="16" y="16" width="8" height="8" rx="2" stroke="white" stroke-width="1.8"/></svg>
+          </div>
+          <h3>Works Everywhere</h3>
+          <p>Runs entirely in your browser. Desktop, tablet, or mobile — no install, no plugins, 100% private.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== MAIN TOOL ===== -->
+  <section class="tool-section" id="tool">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Free Tool</span>
+        <h2>Create Your Stencil</h2>
+        <p>Upload an image and fine-tune your settings</p>
+      </div>
+
+      <div class="tool-wrapper">
+
+        <!-- Upload Zone -->
+        <div class="upload-zone" id="uploadZone">
+          <div class="upload-inner" id="uploadInner">
+            <div class="upload-icon">
+              <svg width="56" height="56" viewBox="0 0 56 56" fill="none"><circle cx="28" cy="28" r="27" stroke="#6C63FF" stroke-width="1.5" stroke-dasharray="6 4"/><path d="M28 18v14M28 18l-5 5M28 18l5 5" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M18 38h20" stroke="#6C63FF" stroke-width="2" stroke-linecap="round"/></svg>
+            </div>
+            <h3>Drop your image here</h3>
+            <p>or <label for="fileInput" class="upload-link">browse to upload</label></p>
+            <span class="upload-hint">JPG, PNG, WEBP, GIF · Max 20MB</span>
+            <input type="file" id="fileInput" accept="image/*" hidden/>
+          </div>
+        </div>
+
+        <!-- Tool Panels (shown after upload) -->
+        <div class="tool-panels" id="toolPanels" style="display:none">
+
+          <!-- Left: Controls -->
+          <div class="controls-panel">
+            <div class="panel-header">
+              <h3>Settings</h3>
+              <button class="btn btn-ghost btn-xs" id="resetBtn">↺ Reset</button>
+            </div>
+
+            <div class="control-group">
+              <label>
+                <span>Mode</span>
+              </label>
+              <div class="segmented-control">
+                <button class="seg-btn active" data-mode="threshold">Threshold</button>
+                <button class="seg-btn" data-mode="edge">Edge Detect</button>
+                <button class="seg-btn" data-mode="sketch">Sketch</button>
+              </div>
+            </div>
+
+            <div class="control-group" id="thresholdGroup">
+              <label>
+                <span>Threshold</span>
+                <span class="val" id="thresholdVal">128</span>
+              </label>
+              <input type="range" id="threshold" min="0" max="255" value="128" class="slider"/>
+            </div>
+
+            <div class="control-group">
+              <label>
+                <span>Contrast</span>
+                <span class="val" id="contrastVal">0</span>
+              </label>
+              <input type="range" id="contrast" min="-100" max="100" value="0" class="slider"/>
+            </div>
+
+            <div class="control-group">
+              <label>
+                <span>Blur / Smooth</span>
+                <span class="val" id="blurVal">0</span>
+              </label>
+              <input type="range" id="blur" min="0" max="10" value="0" step="0.5" class="slider"/>
+            </div>
+
+            <div class="control-group" id="edgeGroup" style="display:none">
+              <label>
+                <span>Edge Strength</span>
+                <span class="val" id="edgeVal">50</span>
+              </label>
+              <input type="range" id="edgeStrength" min="1" max="100" value="50" class="slider"/>
+            </div>
+
+            <div class="control-group">
+              <label>
+                <span>Invert Colors</span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" id="invertToggle"/>
+                <span class="toggle-track"><span class="toggle-thumb"></span></span>
+              </label>
+            </div>
+
+            <div class="control-group">
+              <label>
+                <span>Output Color</span>
+              </label>
+              <div class="color-picker-row">
+                <label class="color-swatch" title="Black">
+                  <input type="radio" name="outputColor" value="black" checked/>
+                  <span style="background:#000"></span>
+                </label>
+                <label class="color-swatch" title="White on Black">
+                  <input type="radio" name="outputColor" value="white"/>
+                  <span style="background:#fff;border:1px solid #ddd"></span>
+                </label>
+                <label class="color-swatch" title="Red">
+                  <input type="radio" name="outputColor" value="red"/>
+                  <span style="background:#e74c3c"></span>
+                </label>
+                <label class="color-swatch" title="Blue">
+                  <input type="radio" name="outputColor" value="blue"/>
+                  <span style="background:#3498db"></span>
+                </label>
+                <label class="color-swatch" title="Custom">
+                  <input type="radio" name="outputColor" value="custom"/>
+                  <span style="background: conic-gradient(red, yellow, green, blue, red)"></span>
+                </label>
+                <input type="color" id="customColor" value="#6C63FF" class="hidden-color"/>
+              </div>
+            </div>
+
+            <div class="control-group">
+              <label>
+                <span>Multi-tone Layers</span>
+                <span class="val" id="layersVal">1</span>
+              </label>
+              <input type="range" id="layers" min="1" max="4" value="1" step="1" class="slider"/>
+            </div>
+
+            <div class="action-buttons">
+              <button class="btn btn-primary btn-full" id="processBtn">
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 1.5a7.5 7.5 0 100 15 7.5 7.5 0 000-15z" stroke="currentColor" stroke-width="1.5"/><path d="M6 9l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Generate Stencil
+              </button>
+              <button class="btn btn-outline btn-full" id="downloadBtn" disabled>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2v9M9 11l-3-3M9 11l3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 14h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Download PNG
+              </button>
+              <button class="btn btn-ghost btn-full" id="newImageBtn">
+                ↩ Upload New Image
+              </button>
+            </div>
+          </div>
+
+          <!-- Center: Canvas Preview -->
+          <div class="canvas-panel">
+            <div class="canvas-tabs">
+              <button class="tab-btn active" data-tab="original">Original</button>
+              <button class="tab-btn" data-tab="stencil">Stencil</button>
+              <button class="tab-btn" data-tab="compare">Compare</button>
+            </div>
+            <div class="canvas-area">
+              <div class="canvas-container" id="originalView">
+                <canvas id="originalCanvas"></canvas>
+              </div>
+              <div class="canvas-container" id="stencilView" style="display:none">
+                <div class="processing-overlay" id="processingOverlay" style="display:none">
+                  <div class="spinner"></div>
+                  <span>Processing…</span>
+                </div>
+                <canvas id="stencilCanvas"></canvas>
+                <div class="stencil-placeholder" id="stencilPlaceholder">
+                  <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22" stroke="#CBD5E0" stroke-width="2"/><path d="M16 24l5 5 11-11" stroke="#CBD5E0" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                  <p>Click "Generate Stencil" to process</p>
+                </div>
+              </div>
+              <div class="canvas-container compare-container" id="compareView" style="display:none">
+                <div class="compare-wrapper">
+                  <canvas id="compareCanvasLeft"></canvas>
+                  <div class="compare-divider" id="compareDivider">
+                    <div class="compare-handle">
+                      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M6 10h8M6 7l-3 3 3 3M14 7l3 3-3 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                  </div>
+                  <canvas id="compareCanvasRight"></canvas>
+                </div>
+              </div>
+            </div>
+            <div class="canvas-info" id="canvasInfo"></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== USE CASES ===== -->
+  <section class="usecases-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">Use Cases</span>
+        <h2>Perfect For</h2>
+      </div>
+      <div class="usecases-grid">
+        <div class="usecase-card">
+          <span class="usecase-emoji">🎨</span>
+          <h4>Tattoo Artists</h4>
+          <p>Convert reference photos into clean transfer stencils for clients.</p>
+        </div>
+        <div class="usecase-card">
+          <span class="usecase-emoji">🪵</span>
+          <h4>Woodworking</h4>
+          <p>Create precise templates for wood burning, carving and routing.</p>
+        </div>
+        <div class="usecase-card">
+          <span class="usecase-emoji">🎭</span>
+          <h4>Spray Paint Art</h4>
+          <p>Generate multi-layer stencils for detailed street art and murals.</p>
+        </div>
+        <div class="usecase-card">
+          <span class="usecase-emoji">👕</span>
+          <h4>Fabric & Textile</h4>
+          <p>Design stencils for screen printing, t-shirts and home decor.</p>
+        </div>
+        <div class="usecase-card">
+          <span class="usecase-emoji">🏠</span>
+          <h4>Home Decor</h4>
+          <p>Create custom wall stencils, furniture painting, and DIY crafts.</p>
+        </div>
+        <div class="usecase-card">
+          <span class="usecase-emoji">📚</span>
+          <h4>Education</h4>
+          <p>Generate teaching aids, outlines and tracing sheets for students.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section class="faq-section">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-badge">FAQ</span>
+        <h2>Frequently Asked Questions</h2>
+      </div>
+      <div class="faq-list">
+        <details class="faq-item">
+          <summary>Is InstaStencil really free?</summary>
+          <p>Yes! InstaStencil is completely free with no hidden costs. All processing happens in your browser — we don't even have a server to pay for.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What image formats are supported?</summary>
+          <p>We support JPG, PNG, WEBP, and GIF. For best results, use high-contrast images with clear subjects. Maximum file size is 20MB.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Is my image uploaded to your servers?</summary>
+          <p>No. All processing is done entirely in your browser using the Canvas API. Your images never leave your device.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What resolution will my stencil be?</summary>
+          <p>The stencil output is the same resolution as your input image. For best print quality, use images of at least 1000×1000 pixels.</p>
+        </details>
+        <details class="faq-item">
+          <summary>Can I use the stencils commercially?</summary>
+          <p>Yes! You retain full rights to any stencil you create. Use them for personal projects, client work, or commercial products.</p>
+        </details>
+        <details class="faq-item">
+          <summary>What's the difference between Threshold, Edge Detect, and Sketch modes?</summary>
+          <p><strong>Threshold</strong> creates pure black-and-white stencils by cutting at a brightness level. <strong>Edge Detect</strong> traces the edges and outlines of objects, great for line-art stencils. <strong>Sketch</strong> combines both to produce a pencil-sketch effect ideal for multi-layer stencils.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="cta-section">
+    <div class="container">
+      <div class="cta-card">
+        <div class="cta-shapes">
+          <div class="cta-shape cta-shape-1"></div>
+          <div class="cta-shape cta-shape-2"></div>
+        </div>
+        <h2>Ready to Create Your Stencil?</h2>
+        <p>Free, instant, no signup. Start converting your images right now.</p>
+        <a href="#tool" class="btn btn-white btn-lg">Create Stencil Now →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <a href="#" class="logo">
+            <svg width="22" height="22" viewBox="0 0 28 28" fill="none"><rect width="28" height="28" rx="8" fill="#6C63FF"/><path d="M7 21L14 7L21 21" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 16.5H18.5" stroke="white" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <span>InstaStencil</span>
+          </a>
+          <p>Free browser-based image to stencil converter. No signup, no server, just results.</p>
+        </div>
+        <div class="footer-links">
+          <div class="footer-col">
+            <h5>Tool</h5>
+            <a href="#tool">Create Stencil</a>
+            <a href="#how">How it Works</a>
+            <a href="#features">Features</a>
+          </div>
+          <div class="footer-col">
+            <h5>Use Cases</h5>
+            <a href="#tool">Tattoo Stencils</a>
+            <a href="#tool">Woodworking</a>
+            <a href="#tool">Spray Paint</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 InstaStencil. All processing happens locally in your browser.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
