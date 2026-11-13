@@ -1,71 +1,39 @@
-# InstaStencil Clone
+# InstaStencil Clone 🇮🇹
 
-> A free, browser-based image-to-stencil converter — no server, no signup, 100% private.
+> Convertitore gratuito nel browser da foto a stencil per tatuaggi ed outline — senza server, senza registrazione, 100% privato.
 
-🌐 **Live Demo**: [instastencil-clone.netlify.app](https://instastencil-clone.netlify.app)
+🌐 **Demo Live**: [instastencil-clone.netlify.app](https://instastencil-clone.netlify.app)
 
-## ✨ Features
+---
 
-- **3 conversion modes**: Threshold, Edge Detect, Sketch
-- **Fine-tune controls**: threshold, contrast, blur, edge strength, multi-tone layers
-- **Color options**: Black, White-on-Black, Red, Blue, or any custom color
-- **Before/After compare slider** — drag to compare original vs stencil
-- **High-res PNG export** at original image resolution
-- **100% client-side** — your images never leave your device
-- **Clipboard paste support** — paste directly from clipboard
-- Responsive design — works on mobile, tablet, desktop
-- Supports JPG, PNG, WEBP, GIF (up to 20MB)
+## ✨ Funzionalità
 
-## 🚀 How It Works
+- **Modalità Tracciato (Outline)**: Estrazione e tracciamento continuo dei contorni con curve Bezier levigate per stencil da tatuaggio e thermal printer.
+- **Rilevamento Bordi Canny**: Algoritmo completo (Filtro Gaussiano → Calcolo del Gradiente Sobel → Non-Maximum Suppression → Isteresi a doppia soglia).
+- **Filtro Bilaterale**: Riduzione del rumore che preserva i contorni nitidi eliminando la grana fotografica.
+- **Ispessimento Linee**: Dilatazione morfologica per linee piene e definite, pronte per la stampa termica o stencil cut.
+- **Ottimizzazione AI**: Integrazione opzionale con Google Gemini API per la stima automatica dei migliori parametri in base all'immagine.
+- **Colori per Tatuatori**: Modalità Rosso Tatuaggio, Nero, Bianco su Nero (per carte termiche e transfer), Blu e Colore personalizzato.
+- **Slider di Confronto Interattivo**: Scorri per confrontare l'immagine originale e lo stencil elaborato fianco a fianco.
+- **Esportazione PNG ad Alta Risoluzione**: Download immediato senza filigrane.
+- **Completamente Locale e Privato**: Le immagini non lasciano il tuo computer (tranne se scegli la modalità AI opzionale).
+- **Supporto Copia e Incolla**: Puoi incollare direttamente uno screenshot o un'immagine dalla clipboard con `Ctrl+V`.
 
-1. **Upload** — Drop, paste, or browse any image
-2. **Adjust** — Tune threshold, contrast, blur and mode in the sidebar
-3. **Generate** — Click "Generate Stencil" for instant processing
-4. **Download** — Save your stencil as a PNG
+---
 
-## 🛠 Tech Stack
+## 🎨 Consigli per Stencil da Tatuaggio
 
-| Technology | Use |
-|------------|-----|
-| Vanilla HTML/CSS/JS | UI + logic |
-| Canvas API | Image processing (Sobel edge detection, Gaussian blur, threshold) |
-| Google Fonts (Inter) | Typography |
-| Netlify | Hosting |
+1. **Usa la modalità Tracciato** (impostata come predefinita).
+2. Regola la **Sensibilità contorni** (15–30 per catturare dettagli fini).
+3. Mantieni attivo il **Filtro bilaterale** per ripulire sfondi complessi o sfumature.
+4. Imposta lo **Spessore linea** a 2 o 3 per stencil ben leggibili sulla pelle e sulle stampanti termiche.
+5. Seleziona **Rosso Tatuaggio** per ottenere lo stile visivo classico di InstaStencil.
 
-## 📦 Project Structure
+---
 
-```
-instastencil-clone/
-├── index.html      # App shell + landing page
-├── style.css       # Complete UI styles
-├── app.js          # Image processing engine + UI logic
-├── netlify.toml    # Netlify deploy config
-└── README.md
-```
+## 🛠 Stack Tecnologico
 
-## 🧠 Algorithm Details
-
-### Threshold Mode
-Pure black-and-white conversion: pixels below the threshold value become the foreground color, pixels above become background. Multi-tone layers divide the grayscale range into N bands.
-
-### Edge Detect Mode
-Uses the **Sobel operator** to compute image gradients (Gx, Gy) and derives edge magnitude. Stronger edges produce darker lines on a white background.
-
-### Sketch Mode
-Combines threshold + edge detection: pixels must pass both tests to remain in the foreground, producing a pencil-sketch look with clean outlines.
-
-### Gaussian Blur
-Implemented as a 3-pass box blur approximation over a user-controllable radius, applied before the stencil conversion for noise reduction.
-
-## 🖨 Use Cases
-
-- **Tattoo stencils** — transfer photos to skin-safe stencil paper
-- **Woodworking** — templates for burning, carving, routing
-- **Spray paint / murals** — multi-layer stencil art
-- **Screen printing** — textile and fabric designs
-- **Home decor** — wall stencils, furniture painting
-- **Education** — outlines and tracing aids
-
-## 📄 License
-
-MIT © 2026 InstaStencil Clone
+- **Frontend**: HTML5, CSS3 moderno con variabili e layout responsivo, Vanilla JavaScript
+- **Canvas API**: Elaborazione matriciale dei pixel, chain code contour tracing e interpolazione Catmull-Rom/Bezier
+- **Hosting**: Netlify
+- **Repository**: GitHub

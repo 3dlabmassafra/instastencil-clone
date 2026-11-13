@@ -463,6 +463,30 @@ p { color: var(--text-secondary); }
   font-size: 0.8125rem; color: #92400E; line-height: 1.5;
 }
 
+/* Mode description box */
+.mode-desc {
+  background: var(--purple-light);
+  border: 1px solid rgba(108, 99, 255, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 0.8125rem;
+  color: var(--text);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.4;
+}
+.mode-desc svg {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.segmented-control.four .seg-btn {
+  padding: 6px 4px;
+  font-size: 0.75rem;
+}
+
 /* Compare wrapper fix */
 .compare-wrapper { position: relative; width: 100%; }
 .compare-wrapper canvas { display: block; max-width: 100%; border-radius: 8px; }
